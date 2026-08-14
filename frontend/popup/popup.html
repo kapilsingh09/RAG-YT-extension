@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>YouTube RAG Chatbot</title>
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Tailwind CSS Compiled -->
+  <link rel="stylesheet" href="tailwind.css">
+  
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body class="bg-slate-900 text-slate-100 flex flex-col overflow-hidden selection:bg-indigo-500/30 font-outfit" style="width: 440px; height: 600px;">
+
+  <!-- Minimal Header -->
+  <header class="flex items-center justify-between px-4 py-3 bg-slate-900/80 backdrop-blur-md border-b border-slate-800 shrink-0 z-10 shadow-sm">
+    <div class="flex items-center gap-2">
+      <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-400">
+        <i class="fa-solid fa-sparkles text-sm"></i>
+      </div>
+      <h1 class="text-base font-semibold tracking-wide">YT Chat</h1>
+    </div>
+    <div class="flex items-center gap-1">
+      <button id="settings-btn" class="w-8 h-8 flex items-center justify-center rounded-md text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition-colors" title="Settings">
+        <i class="fa-solid fa-gear text-sm"></i>
+      </button>
+      <button id="reset-btn" class="w-8 h-8 flex items-center justify-center rounded-md text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-colors" title="Clear Chat">
+        <i class="fa-solid fa-trash-can text-sm"></i>
+      </button>
+    </div>
+  </header>
+
+  <div class="flex-1 flex flex-col overflow-hidden relative w-full px-3 pt-3">
+    
+    <!-- Collapsible YouTube Video Banner -->
+    <div class="mb-3 shrink-0 group">
+      <div class="flex items-center justify-between px-1 mb-1.5">
+        <span class="text-xs font-medium text-slate-500 uppercase tracking-wider">Context</span>
+        <button id="toggle-banner-btn" class="text-slate-500 hover:text-slate-300 transition-colors p-1" title="Toggle Banner">
+          <i id="toggle-banner-icon" class="fa-solid fa-chevron-up text-[10px]"></i>
+        </button>
+      </div>
+      
+      <div id="video-banner" class="bg-slate-800/50 border border-slate-700/50 rounded-xl overflow-hidden transition-all duration-300 transform origin-top">
+        <div class="flex items-center p-2 gap-3">
+          <img id="video-thumbnail" src="" alt="Thumbnail" class="w-20 h-12 object-cover rounded-md shadow-sm bg-slate-800" style="display: none;">
+          <div class="flex-1 min-w-0">
+            <p id="video-title" class="text-sm font-medium text-slate-200 truncate pr-2">Detecting video...</p>
+            <p class="text-[10px] text-slate-500 mt-0.5"><i class="fa-brands fa-youtube text-red-500/80 mr-1"></i>Active Tab</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Model Pill (Toggleable) -->
+    <div class="flex items-center justify-center mb-3 shrink-0" id="model-pill-container">
+      <div class="group relative flex items-center">
+        <div id="model-pill" class="flex items-center gap-2 bg-slate-800/80 border border-slate-700/80 px-3 py-1 rounded-full shadow-sm transition-all duration-300">
+          <div class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></div>
+          <span id="active-model-text" class="text-xs font-medium text-slate-300">Free Model</span>
+        </div>
+        <button id="toggle-model-btn" class="absolute -right-6 text-slate-600 hover:text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity p-1" title="Toggle Model Name">
+          <i id="toggle-model-icon" class="fa-regular fa-eye-slash text-xs"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Settings Overlay (Hidden by default) -->
+    <div id="setup-container" class="hidden absolute inset-0 z-20 bg-slate-900/95 backdrop-blur-sm px-4 pt-10 flex-col">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-lg font-medium">Model Settings</h2>
+        <button id="close-settings-btn" class="text-slate-400 hover:text-white p-2 transition-colors"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      
+      <div class="space-y-4">
+        <div class="space-y-1.5">
+          <label class="text-xs font-medium text-slate-400 ml-1">AI Provider</label>
+          <div class="relative">
+            <select id="model-select" class="w-full appearance-none bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-xl px-4 py-3 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all cursor-pointer">
+              <option value="free">Free Model (Qwen)</option>
+              <option value="gemini">Gemini</option>
+              <option value="grok">Grok</option>
+            </select>
+            <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 text-xs pointer-events-none"></i>
+          </div>
+        </div>
+
+        <div id="api-key-container" class="hidden space-y-1.5">
+          <label class="text-xs font-medium text-slate-400 ml-1">API Key</label>
+          <div class="relative">
+            <i class="fa-solid fa-key absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+            <input type="password" id="api-key-input" placeholder="Paste your API key here..." class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-xl pl-10 pr-4 py-3 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-600" />
+          </div>
+        </div>
+        
+        <button id="save-setup-btn" class="w-full mt-4 bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-3 rounded-xl transition-all shadow-md shadow-indigo-500/20 active:scale-[0.98]">
+          Save & Apply
+        </button>
+      </div>
+    </div>
+
+    <!-- Chat History -->
+    <div id="chat-history" class="flex-1 overflow-y-auto overflow-x-hidden flex flex-col gap-4 pb-24 pr-1 scroll-smooth custom-scrollbar">
+      <!-- Messages injected here -->
+    </div>
+
+  </div>
+
+  <!-- Input Area (Fixed Bottom) -->
+  <div class="absolute bottom-0 left-0 w-full p-3 bg-gradient-to-t from-slate-900 via-slate-900 to-transparent pt-8">
+    <div class="relative flex items-center bg-slate-800/80 backdrop-blur-md border border-slate-700 rounded-full shadow-lg p-1.5 transition-all focus-within:border-indigo-500/50 focus-within:bg-slate-800 focus-within:shadow-indigo-500/10">
+      <input type="text" id="question-input" placeholder="Ask about this video..." disabled class="w-full bg-transparent text-slate-100 text-sm px-4 py-2 outline-none placeholder:text-slate-500 disabled:opacity-50" />
+      <button id="ask-btn" disabled class="shrink-0 w-9 h-9 flex items-center justify-center bg-indigo-600 hover:bg-indigo-500 disabled:bg-slate-700 disabled:text-slate-500 text-white rounded-full transition-all active:scale-95 ml-1">
+        <i class="fa-solid fa-arrow-up text-sm"></i>
+      </button>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
