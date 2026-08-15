@@ -17,6 +17,11 @@
 </head>
 <body class="bg-slate-900 text-slate-100 flex flex-col overflow-hidden selection:bg-indigo-500/30 font-outfit" style="width: 440px; height: 600px;">
 
+  <!-- Glowing Background Blobs -->
+  <div class="absolute top-[-10%] left-[-10%] w-[260px] h-[260px] rounded-full bg-indigo-600/10 blur-[90px] pointer-events-none z-0"></div>
+  <div class="absolute bottom-[10%] right-[-10%] w-[220px] h-[220px] rounded-full bg-pink-600/10 blur-[85px] pointer-events-none z-0"></div>
+  <div class="absolute top-[35%] right-[20%] w-[160px] h-[160px] rounded-full bg-blue-600/5 blur-[70px] pointer-events-none z-0"></div>
+
   <!-- Minimal Header -->
   <header class="flex items-center justify-between px-4 py-3 bg-slate-900/80 backdrop-blur-md border-b border-slate-800 shrink-0 z-10 shadow-sm">
     <div class="flex items-center gap-2">
@@ -35,7 +40,7 @@
     </div>
   </header>
 
-  <div class="flex-1 flex flex-col overflow-hidden relative w-full px-3 pt-3">
+  <div class="flex-1 flex flex-col overflow-hidden relative w-full px-3 pt-3 z-10">
     
     <!-- Collapsible YouTube Video Banner -->
     <div class="mb-3 shrink-0 group">
@@ -112,10 +117,10 @@
   </div>
 
   <!-- Input Area (Fixed Bottom) -->
-  <div class="absolute bottom-0 left-0 w-full p-3 bg-gradient-to-t from-slate-900 via-slate-900 to-transparent pt-8">
-    <div class="relative flex items-center bg-slate-800/80 backdrop-blur-md border border-slate-700 rounded-full shadow-lg p-1.5 transition-all focus-within:border-indigo-500/50 focus-within:bg-slate-800 focus-within:shadow-indigo-500/10">
+  <div id="input-wrapper" class="absolute bottom-0 left-0 w-full p-3 pt-8 z-10">
+    <div id="input-container" class="relative flex items-center rounded-full p-1.5 transition-all">
       <input type="text" id="question-input" placeholder="Ask about this video..." disabled class="w-full bg-transparent text-slate-100 text-sm px-4 py-2 outline-none placeholder:text-slate-500 disabled:opacity-50" />
-      <button id="ask-btn" disabled class="shrink-0 w-9 h-9 flex items-center justify-center bg-indigo-600 hover:bg-indigo-500 disabled:bg-slate-700 disabled:text-slate-500 text-white rounded-full transition-all active:scale-95 ml-1">
+      <button id="ask-btn" disabled class="shrink-0 w-9 h-9 flex items-center justify-center text-white rounded-full ml-1">
         <i class="fa-solid fa-arrow-up text-sm"></i>
       </button>
     </div>
