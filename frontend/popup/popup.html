@@ -1,128 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>YouTube RAG Chatbot</title>
-  
-  <!-- Fonts & Icons -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  
-  <!-- Tailwind CSS Compiled -->
-  <link rel="stylesheet" href="tailwind.css">
-  
-  <link rel="stylesheet" href="popup.css">
+<meta charset="UTF-8">
+<title>YT Chat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="tailwind.css">
+<link rel="stylesheet" href="popup.css">
 </head>
-<body class="bg-slate-900 text-slate-100 flex flex-col overflow-hidden selection:bg-indigo-500/30 font-outfit" style="width: 440px; height: 600px;">
+<body class="m-0 w-[440px] h-[600px] relative overflow-hidden bg-black text-white font-sans flex flex-col">
 
-  <!-- Glowing Background Blobs -->
-  <div class="absolute top-[-10%] left-[-10%] w-[260px] h-[260px] rounded-full bg-indigo-600/10 blur-[90px] pointer-events-none z-0"></div>
-  <div class="absolute bottom-[10%] right-[-10%] w-[220px] h-[220px] rounded-full bg-pink-600/10 blur-[85px] pointer-events-none z-0"></div>
-  <div class="absolute top-[35%] right-[20%] w-[160px] h-[160px] rounded-full bg-blue-600/5 blur-[70px] pointer-events-none z-0"></div>
-
-  <!-- Minimal Header -->
-  <header class="flex items-center justify-between px-4 py-3 bg-slate-900/80 backdrop-blur-md border-b border-slate-800 shrink-0 z-10 shadow-sm">
-    <div class="flex items-center gap-2">
-      <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-400">
-        <i class="fa-solid fa-sparkles text-sm"></i>
+  <header class="flex items-center justify-between py-[14px] px-[16px] border-b border-[#e3e3e3]/20 bg-black shrink-0 z-10">
+    <div class="flex items-center gap-[9px]">
+      <div class="w-[28px] h-[28px] border border-[#cfcfcf]/30 rounded-[8px] flex items-center justify-center bg-[#f7f7f7]/10">
+        <i class="fa-solid fa-sparkles text-[12px] text-white"></i>
       </div>
-      <h1 class="text-base font-semibold tracking-wide">YT Chat</h1>
+      <h1 class="text-[14px] font-semibold tracking-[0.01em] m-0">YT Chat</h1>
     </div>
-    <div class="flex items-center gap-1">
-      <button id="settings-btn" class="w-8 h-8 flex items-center justify-center rounded-md text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition-colors" title="Settings">
-        <i class="fa-solid fa-gear text-sm"></i>
-      </button>
-      <button id="reset-btn" class="w-8 h-8 flex items-center justify-center rounded-md text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-colors" title="Clear Chat">
-        <i class="fa-solid fa-trash-can text-sm"></i>
-      </button>
+    <div class="flex gap-[2px]">
+      <button id="settings-btn" class="w-[30px] h-[30px] border-none bg-transparent rounded-[7px] text-[#9a9a9a] flex items-center justify-center cursor-pointer transition-all hover:bg-[#f0f0f0]/10 hover:text-white" title="Settings"><i class="fa-solid fa-gear"></i></button>
+      <button id="reset-btn" class="w-[30px] h-[30px] border-none bg-transparent rounded-[7px] text-[#9a9a9a] flex items-center justify-center cursor-pointer transition-all hover:bg-[#fbeaea]/20 hover:text-[#ff6b6b]" title="Clear chat"><i class="fa-solid fa-trash-can"></i></button>
     </div>
   </header>
 
-  <div class="flex-1 flex flex-col overflow-hidden relative w-full px-3 pt-3 z-10">
-    
-    <!-- Collapsible YouTube Video Banner -->
-    <div class="mb-3 shrink-0 group">
-      <div class="flex items-center justify-between px-1 mb-1.5">
-        <span class="text-xs font-medium text-slate-500 uppercase tracking-wider">Context</span>
-        <button id="toggle-banner-btn" class="text-slate-500 hover:text-slate-300 transition-colors p-1" title="Toggle Banner">
+  <div class="flex-1 flex flex-col overflow-hidden relative pt-[12px] px-[14px]">
+
+    <!-- Video context -->
+    <div>
+      <div class="flex items-center justify-between px-[2px] pb-[6px]">
+        <span class="text-[10px] font-semibold tracking-[.08em] uppercase text-[#9a9a9a]">Context</span>
+        <button id="toggle-banner-btn" class="border-none bg-transparent text-[#9a9a9a] cursor-pointer p-[3px] rounded-[5px] flex items-center transition-colors hover:text-white" title="Toggle banner">
           <i id="toggle-banner-icon" class="fa-solid fa-chevron-up text-[10px]"></i>
         </button>
       </div>
-      
-      <div id="video-banner" class="bg-slate-800/50 border border-slate-700/50 rounded-xl overflow-hidden transition-all duration-300 transform origin-top">
-        <div class="flex items-center p-2 gap-3">
-          <img id="video-thumbnail" src="" alt="Thumbnail" class="w-20 h-12 object-cover rounded-md shadow-sm bg-slate-800" style="display: none;">
-          <div class="flex-1 min-w-0">
-            <p id="video-title" class="text-sm font-medium text-slate-200 truncate pr-2">Detecting video...</p>
-            <p class="text-[10px] text-slate-500 mt-0.5"><i class="fa-brands fa-youtube text-red-500/80 mr-1"></i>Active Tab</p>
+      <div id="video-banner" class="border border-[#e3e3e3]/20 border-l-[3px] border-l-white rounded-[10px] overflow-hidden bg-[#f7f7f7]/10 transition-all duration-300 max-h-[80px]">
+        <div class="flex items-center p-[8px] gap-[10px]">
+          <img id="video-thumbnail" src="" alt="" class="w-[76px] h-[44px] object-cover rounded-[6px] bg-[#f0f0f0]/10 border border-[#e3e3e3]/20 shrink-0" style="display:none;">
+          <div class="min-w-0 flex-1">
+            <p id="video-title" class="text-[12.5px] font-medium text-white whitespace-nowrap overflow-hidden text-ellipsis m-0">Detecting video…</p>
+            <span class="inline-flex items-center gap-[4px] text-[10px] text-[#9a9a9a] mt-[3px]">
+              <i class="fa-brands fa-youtube text-[#ff0033] text-[9px]"></i>Active tab
+            </span>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Active Model Pill (Toggleable) -->
-    <div class="flex items-center justify-center mb-3 shrink-0" id="model-pill-container">
-      <div class="group relative flex items-center">
-        <div id="model-pill" class="flex items-center gap-2 bg-slate-800/80 border border-slate-700/80 px-3 py-1 rounded-full shadow-sm transition-all duration-300">
-          <div class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></div>
-          <span id="active-model-text" class="text-xs font-medium text-slate-300">Free Model</span>
+    <!-- Model pill -->
+    <div class="flex justify-center my-[12px] shrink-0" id="model-pill-container">
+      <div class="relative flex items-center group">
+        <div id="model-pill" class="flex items-center gap-[7px] px-[12px] py-[5px] border border-[#cfcfcf]/30 rounded-full bg-black">
+          <div class="w-[6px] h-[6px] rounded-full bg-[#20beff] shadow-[0_0_0_3px_rgba(32,190,255,.15)] animate-pulse"></div>
+          <span id="active-model-text" class="text-[11px] font-medium text-[#9a9a9a] tracking-[.01em]">Free model</span>
         </div>
-        <button id="toggle-model-btn" class="absolute -right-6 text-slate-600 hover:text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity p-1" title="Toggle Model Name">
-          <i id="toggle-model-icon" class="fa-regular fa-eye-slash text-xs"></i>
+        <button id="toggle-model-btn" class="absolute -right-[26px] border-none bg-transparent text-[#9a9a9a] opacity-0 group-hover:opacity-100 cursor-pointer p-[4px] transition-opacity" title="Toggle model name">
+          <i id="toggle-model-icon" class="fa-regular fa-eye-slash"></i>
         </button>
       </div>
     </div>
 
-    <!-- Settings Overlay (Hidden by default) -->
-    <div id="setup-container" class="hidden absolute inset-0 z-20 bg-slate-900/95 backdrop-blur-sm px-4 pt-10 flex-col">
-      <div class="flex items-center justify-between mb-6">
-        <h2 class="text-lg font-medium">Model Settings</h2>
-        <button id="close-settings-btn" class="text-slate-400 hover:text-white p-2 transition-colors"><i class="fa-solid fa-xmark"></i></button>
+    <!-- Settings overlay -->
+    <div id="setup-container" class="hidden absolute inset-0 z-30 bg-black/90 backdrop-blur-[6px] pt-[18px] px-[18px] flex-col">
+      <div class="flex items-center justify-between mb-[22px]">
+        <h2 class="text-[15px] font-semibold m-0 text-white">Model settings</h2>
+        <button id="close-settings-btn" class="w-[30px] h-[30px] border-none bg-transparent rounded-[7px] text-[#9a9a9a] flex items-center justify-center cursor-pointer transition-all hover:bg-[#f0f0f0]/10 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
       </div>
-      
-      <div class="space-y-4">
-        <div class="space-y-1.5">
-          <label class="text-xs font-medium text-slate-400 ml-1">AI Provider</label>
-          <div class="relative">
-            <select id="model-select" class="w-full appearance-none bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-xl px-4 py-3 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all cursor-pointer">
-              <option value="free">Free Model (Qwen)</option>
-              <option value="gemini">Gemini</option>
-              <option value="grok">Grok</option>
-            </select>
-            <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 text-xs pointer-events-none"></i>
-          </div>
-        </div>
 
-        <div id="api-key-container" class="hidden space-y-1.5">
-          <label class="text-xs font-medium text-slate-400 ml-1">API Key</label>
-          <div class="relative">
-            <i class="fa-solid fa-key absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
-            <input type="password" id="api-key-input" placeholder="Paste your API key here..." class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-xl pl-10 pr-4 py-3 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-600" />
-          </div>
+      <div class="mb-[16px]">
+        <label class="block text-[10.5px] font-semibold tracking-[.06em] uppercase text-[#9a9a9a] mb-[7px]">AI provider</label>
+        <div class="relative">
+          <select id="model-select" class="w-full bg-[#f7f7f7]/10 border border-[#cfcfcf]/30 rounded-[7px] text-white font-inherit text-[13px] py-[10px] pl-[12px] pr-[34px] outline-none appearance-none transition-all focus:border-white focus:shadow-[0_0_0_3px_rgba(32,190,255,.12)]">
+            <option value="free" class="bg-black">Free model (Qwen)</option>
+            <option value="gemini" class="bg-black">Gemini</option>
+            <option value="grok" class="bg-black">Grok</option>
+          </select>
+          <i class="fa-solid fa-chevron-down absolute right-[12px] top-1/2 -translate-y-1/2 text-[10px] text-[#9a9a9a] pointer-events-none"></i>
         </div>
-        
-        <button id="save-setup-btn" class="w-full mt-4 bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-3 rounded-xl transition-all shadow-md shadow-indigo-500/20 active:scale-[0.98]">
-          Save & Apply
-        </button>
       </div>
+
+      <div id="api-key-container" class="mb-[16px] hidden">
+        <label class="block text-[10.5px] font-semibold tracking-[.06em] uppercase text-[#9a9a9a] mb-[7px]">API key</label>
+        <div class="relative">
+          <i class="fa-solid fa-key absolute left-[12px] top-1/2 -translate-y-1/2 text-[11px] text-[#9a9a9a]"></i>
+          <input type="password" id="api-key-input" placeholder="Paste your API key here…" class="w-full bg-[#f7f7f7]/10 border border-[#cfcfcf]/30 rounded-[7px] text-white font-inherit text-[13px] py-[10px] pl-[32px] pr-[12px] outline-none appearance-none transition-all focus:border-white focus:shadow-[0_0_0_3px_rgba(32,190,255,.12)]">
+        </div>
+      </div>
+
+      <button id="save-setup-btn" class="w-full bg-white text-black border-none font-inherit text-[13px] font-semibold p-[11px] rounded-[7px] cursor-pointer mt-[6px] transition-all hover:opacity-[.85] active:scale-95">Save &amp; apply</button>
     </div>
 
-    <!-- Chat History -->
-    <div id="chat-history" class="flex-1 overflow-y-auto overflow-x-hidden flex flex-col gap-4 pb-24 pr-1 scroll-smooth custom-scrollbar">
-      <!-- Messages injected here -->
+    <!-- Chat -->
+    <div id="chat-history" class="flex-1 overflow-y-auto overflow-x-hidden flex flex-col gap-[14px] p-[2px] pb-[100px] custom-scrollbar">
+      <div class="flex-1 flex flex-col items-center justify-center text-center text-[#9a9a9a] px-[30px] gap-[10px]">
+        <i class="fa-solid fa-comment-dots text-[20px] text-[#cfcfcf]/30"></i>
+        <p class="text-[12.5px] leading-[1.5] m-0">Ask anything about this video.<br>Answers are grounded in its transcript.</p>
+        <span class="text-[11px] text-[#9a9a9a] font-mono">e.g. "summarize the last 5 minutes"</span>
+      </div>
     </div>
-
   </div>
 
-  <!-- Input Area (Fixed Bottom) -->
-  <div id="input-wrapper" class="absolute bottom-0 left-0 w-full p-3 pt-8 z-10">
-    <div id="input-container" class="relative flex items-center rounded-full p-1.5 transition-all">
-      <input type="text" id="question-input" placeholder="Ask about this video..." disabled class="w-full bg-transparent text-slate-100 text-sm px-4 py-2 outline-none placeholder:text-slate-500 disabled:opacity-50" />
-      <button id="ask-btn" disabled class="shrink-0 w-9 h-9 flex items-center justify-center text-white rounded-full ml-1">
-        <i class="fa-solid fa-arrow-up text-sm"></i>
-      </button>
+  <!-- Input -->
+  <div id="input-wrapper" class="absolute bottom-0 left-0 w-full px-[14px] pt-[10px] pb-[14px] bg-gradient-to-t from-black via-black/90 to-transparent z-10">
+    <div id="input-container" class="flex items-center border border-[#cfcfcf]/30 rounded-full bg-black py-[5px] pr-[5px] pl-[16px] transition-all focus-within:border-white focus-within:shadow-[0_0_0_3px_rgba(32,190,255,.12)]">
+      <input type="text" id="question-input" placeholder="Ask about this video…" disabled class="flex-1 border-none outline-none bg-transparent font-inherit text-[13px] text-white py-[8px] pr-[8px] placeholder:text-[#9a9a9a] disabled:cursor-not-allowed">
+      <button id="ask-btn" disabled class="shrink-0 w-[32px] h-[32px] border-none rounded-full bg-white text-black flex items-center justify-center cursor-pointer transition-all hover:scale-105 disabled:bg-[#cfcfcf]/30 disabled:text-[#9a9a9a] disabled:cursor-not-allowed disabled:hover:scale-100"><i class="fa-solid fa-arrow-up"></i></button>
     </div>
   </div>
 

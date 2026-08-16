@@ -175,11 +175,13 @@ function updateSettingsUI() {
 
 function showSetupView() {
     setupContainer.classList.remove('hidden');
+    setupContainer.classList.add('open');
     setupContainer.classList.add('flex');
 }
 
 function hideSetupView() {
     setupContainer.classList.add('hidden');
+    setupContainer.classList.remove('open');
     setupContainer.classList.remove('flex');
 }
 
@@ -228,6 +230,11 @@ toggleModelBtn.addEventListener('click', () => {
 // --- Event Listeners ---
 
 settingsBtn.addEventListener('click', () => showSetupView());
+modelPillContainer.addEventListener('click', (e) => {
+    if (e.target.closest('#toggle-model-btn')) return;
+    showSetupView();
+});
+modelPillContainer.style.cursor = 'pointer';
 closeSettingsBtn.addEventListener('click', () => hideSetupView());
 
 askBtn.addEventListener('click', handleAskQuestion);
