@@ -37,7 +37,7 @@
         class="flex items-center gap-2 px-3 py-[5px]
                border border-[#303030] rounded-full bg-[#1e1e1e]
                transition-all duration-200 hover:border-[#404040]">
-        <!-- <div class="w-[6px] h-[6px] rounded-full bg-[#00ffbf] animate-pulse"></div> -->
+        <div class="w-[6px] h-[6px] rounded-full bg-[#00ffbf] animate-pulse"></div>
         <span id="active-model-text"
           class="text-[11px] font-medium text-[#bbb] tracking-[.01em] font-code">
           Free model
@@ -72,7 +72,7 @@
           Context
         </span>
         <button id="toggle-banner-btn"
-          class="border-none bg-white text-black cursor-pointer p-1 rounded
+          class="border-none bg-white text-black cursor-pointer px-2 py-1 rounded
                  flex items-center transition-colors hover:bg-[#e5e5e5]"
           title="Toggle banner">
           <i id="toggle-banner-icon" class="fa-solid fa-chevron-up text-[9px]"></i>
@@ -177,18 +177,18 @@
     class="absolute bottom-0 left-0 w-full px-3.5 pt-3 pb-3 z-10"
     style="background:linear-gradient(to top, #121212 60%, rgba(18,18,18,0))">
     <div id="input-container"
-      class="flex items-center border border-[#303030] rounded-xl bg-[#1e1e1e]
+      class="flex items-center border border-[#303030] rounded-full bg-[#1e1e1e]
              py-1.5 pr-1.5 pl-4
-             transition-all focus-within:border-[#20BEFF] focus-within:shadow-[0_0_0_2px_rgba(32,190,255,0.15)]">
+             transition-all focus-within:border-[#f3f3f3] focus-within:shadow-[0_0_0_2px_rgba(255,255,255,0.15)]">
       <input type="text" id="question-input" placeholder="Ask about this video…" disabled
         class="flex-1 border-none outline-none bg-transparent text-[13px] text-white
                py-2 pr-2 placeholder:text-[#555] disabled:cursor-not-allowed">
       <button id="ask-btn" disabled
-        class="shrink-0 w-8 h-8 border-none rounded-lg bg-[#1e1e1e]
+        class="shrink-0 w-8 h-8 border-none rounded-full bg-white text-black
                flex items-center justify-center cursor-pointer transition-all
                hover:bg-[#e5e5e5]
-               disabled:bg-[#000000] disabled:text-[#fff]
-               disabled:cursor-not-allowed disabled:hover:bg-[#2a2a2a]">
+               disabled:bg-[#303030] disabled:text-[#666]
+               disabled:cursor-not-allowed disabled:hover:bg-[#303030]">
         <i class="fa-solid fa-arrow-up text-[13px]"></i>
       </button>
     </div>
