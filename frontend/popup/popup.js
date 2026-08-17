@@ -21,7 +21,6 @@ const chatHistoryEl = document.getElementById('chat-history');
 const questionInput = document.getElementById('question-input');
 const askBtn = document.getElementById('ask-btn');
 const resetBtn = document.getElementById('reset-btn');
-const settingsBtn = document.getElementById('settings-btn');
 const closeSettingsBtn = document.getElementById('close-settings-btn');
 
 const modelSelect = document.getElementById('model-select');
@@ -229,10 +228,13 @@ toggleModelBtn.addEventListener('click', () => {
 
 // --- Event Listeners ---
 
-settingsBtn.addEventListener('click', () => showSetupView());
 modelPillContainer.addEventListener('click', (e) => {
     if (e.target.closest('#toggle-model-btn')) return;
-    showSetupView();
+    if (setupContainer.classList.contains('hidden')) {
+        showSetupView();
+    } else {
+        hideSetupView();
+    }
 });
 modelPillContainer.style.cursor = 'pointer';
 closeSettingsBtn.addEventListener('click', () => hideSetupView());

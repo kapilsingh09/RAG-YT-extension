@@ -52,19 +52,12 @@
 
     <!-- Actions -->
     <div class="flex gap-0.5 shrink-0">
-      <button id="settings-btn"
-        class="w-8 h-8 border-none bg-white rounded-md text-black
-               flex items-center justify-center cursor-pointer
-               transition-all hover:bg-[#e5e5e5]"
-        title="Settings">
-        <i class="fa-solid fa-gear text-[13px]"></i>
-      </button>
       <button id="reset-btn"
-        class="w-8 h-8 border-none bg-white rounded-md text-black
+        class="w-8 h-8 border-none bg-red-700 rounded-md text-white
                flex items-center justify-center cursor-pointer
-               transition-all hover:bg-[#e5e5e5] hover:text-[#ff5252]"
+               transition-all hover:bg-red-600"
         title="Clear chat">
-        <i class="fa-solid fa-arrow-rotate-left text-[12px]"></i>
+        <i class="fa-solid fa-trash text-[12px]"></i>
       </button>
     </div>
   </header>
@@ -119,7 +112,7 @@
           class="w-8 h-8 border-none bg-white rounded-md text-black
                  flex items-center justify-center cursor-pointer
                  transition-all hover:bg-[#e5e5e5]">
-          <i class="fa-solid fa-xmark"></i>
+          <i class="fa-solid fa-xmark"></i> 
         </button>
       </div>
 
@@ -191,10 +184,10 @@
         class="flex-1 border-none outline-none bg-transparent text-[13px] text-white
                py-2 pr-2 placeholder:text-[#555] disabled:cursor-not-allowed">
       <button id="ask-btn" disabled
-        class="shrink-0 w-8 h-8 border-none rounded-lg bg-white text-black
+        class="shrink-0 w-8 h-8 border-none rounded-lg bg-[#1e1e1e]
                flex items-center justify-center cursor-pointer transition-all
                hover:bg-[#e5e5e5]
-               disabled:bg-[#2a2a2a] disabled:text-[#555]
+               disabled:bg-[#000000] disabled:text-[#fff]
                disabled:cursor-not-allowed disabled:hover:bg-[#2a2a2a]">
         <i class="fa-solid fa-arrow-up text-[13px]"></i>
       </button>
