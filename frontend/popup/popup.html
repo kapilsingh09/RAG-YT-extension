@@ -1,114 +1,207 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>YT Chat</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="tailwind.css">
-<link rel="stylesheet" href="popup.css">
-</head>
-<body class="m-0 w-[440px] h-[600px] relative overflow-hidden bg-black text-white font-sans flex flex-col">
 
-  <header class="flex items-center justify-between py-[14px] px-[16px] border-b border-[#e3e3e3]/20 bg-black shrink-0 z-10">
-    <div class="flex items-center gap-[9px]">
-      <div class="w-[28px] h-[28px] border border-[#cfcfcf]/30 rounded-[8px] flex items-center justify-center bg-[#f7f7f7]/10">
-        <i class="fa-solid fa-sparkles text-[12px] text-white"></i>
-      </div>
-      <h1 class="text-[14px] font-semibold tracking-[0.01em] m-0">YT Chat</h1>
+<head>
+  <meta charset="UTF-8">
+  <title>YT Chat</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="tailwind.css">
+  <link rel="stylesheet" href="popup.css">
+</head>
+
+<!-- Tailwind safelist: classes toggled only by JS at runtime -->
+<div class="hidden opacity-0 opacity-100 scale-90 scale-100 border-red-500"></div>
+
+<body class="m-0 w-[440px] h-[600px] relative overflow-hidden bg-[#121212] text-white flex flex-col">
+
+  <!-- ═══ HEADER ═══ -->
+  <header class="flex items-center px-3.5 py-2.5 border-b border-[#303030] bg-[#121212] shrink-0 z-10 gap-3">
+
+    <!-- Brand -->
+    <div class="flex items-center gap-2 shrink-0">
+     
+      <h1 class="text-[13px] font-semibold">Youtube Chat</h1>
     </div>
-    <div class="flex gap-[2px]">
-      <button id="settings-btn" class="w-[30px] h-[30px] border-none bg-transparent rounded-[7px] text-[#9a9a9a] flex items-center justify-center cursor-pointer transition-all hover:bg-[#f0f0f0]/10 hover:text-white" title="Settings"><i class="fa-solid fa-gear"></i></button>
-      <button id="reset-btn" class="w-[30px] h-[30px] border-none bg-transparent rounded-[7px] text-[#9a9a9a] flex items-center justify-center cursor-pointer transition-all hover:bg-[#fbeaea]/20 hover:text-[#ff6b6b]" title="Clear chat"><i class="fa-solid fa-trash-can"></i></button>
+
+    <!-- Spacer -->
+    <div class="flex-1"></div>
+
+    <!-- Model pill -->
+    <div class="cursor-pointer shrink-0" id="model-pill-container">
+      <div id="model-pill"
+        class="flex items-center gap-2 px-3 py-[5px]
+               border border-[#303030] rounded-full bg-[#1e1e1e]
+               transition-all duration-200 hover:border-[#404040]">
+        <!-- <div class="w-[6px] h-[6px] rounded-full bg-[#00ffbf] animate-pulse"></div> -->
+        <span id="active-model-text"
+          class="text-[11px] font-medium text-[#bbb] tracking-[.01em] font-code">
+          Free model
+        </span>
+      </div>
+    </div>
+
+    <!-- Hidden toggle (needed by JS) -->
+    <button id="toggle-model-btn" class="hidden" title="Toggle model name">
+      <i id="toggle-model-icon" class="fa-regular fa-eye-slash"></i>
+    </button>
+
+    <!-- Actions -->
+    <div class="flex gap-0.5 shrink-0">
+      <button id="settings-btn"
+        class="w-8 h-8 border-none bg-transparent rounded-md text-[#888]
+               flex items-center justify-center cursor-pointer
+               transition-all hover:bg-[#2a2a2a] hover:text-white"
+        title="Settings">
+        <i class="fa-solid fa-gear text-[13px]"></i>
+      </button>
+      <button id="reset-btn"
+        class="w-8 h-8 border-none bg-transparent rounded-md text-[#888]
+               flex items-center justify-center cursor-pointer
+               transition-all hover:bg-[#2a2a2a] hover:text-[#ff5252]"
+        title="Clear chat">
+        <i class="fa-solid fa-arrow-rotate-left text-[12px]"></i>
+      </button>
     </div>
   </header>
 
-  <div class="flex-1 flex flex-col overflow-hidden relative pt-[12px] px-[14px]">
+  <!-- ═══ BODY ═══ -->
+  <div class="flex-1 flex flex-col overflow-hidden relative px-3.5 pt-3">
 
-    <!-- Video context -->
-    <div>
-      <div class="flex items-center justify-between px-[2px] pb-[6px]">
-        <span class="text-[10px] font-semibold tracking-[.08em] uppercase text-[#9a9a9a]">Context</span>
-        <button id="toggle-banner-btn" class="border-none bg-transparent text-[#9a9a9a] cursor-pointer p-[3px] rounded-[5px] flex items-center transition-colors hover:text-white" title="Toggle banner">
-          <i id="toggle-banner-icon" class="fa-solid fa-chevron-up text-[10px]"></i>
+    <!-- ── Context ── -->
+    <div class="mb-3">
+      <div class="flex items-center justify-between px-0.5 pb-1.5">
+        <span class="text-[10px] font-semibold tracking-[.1em] uppercase text-[#666] font-code">
+          Context
+        </span>
+        <button id="toggle-banner-btn"
+          class="border-none bg-transparent text-[#666] cursor-pointer p-1 rounded
+                 flex items-center transition-colors hover:text-[#aaa]"
+          title="Toggle banner">
+          <i id="toggle-banner-icon" class="fa-solid fa-chevron-up text-[9px]"></i>
         </button>
       </div>
-      <div id="video-banner" class="border border-[#e3e3e3]/20 border-l-[3px] border-l-white rounded-[10px] overflow-hidden bg-[#f7f7f7]/10 transition-all duration-300 max-h-[80px]">
-        <div class="flex items-center p-[8px] gap-[10px]">
-          <img id="video-thumbnail" src="" alt="" class="w-[76px] h-[44px] object-cover rounded-[6px] bg-[#f0f0f0]/10 border border-[#e3e3e3]/20 shrink-0" style="display:none;">
+
+      <div id="video-banner"
+        class="border border-[#303030] rounded-lg overflow-hidden bg-[#1e1e1e]
+               transition-all duration-[250ms] max-h-[80px]">
+        <div class="flex items-center p-2.5 gap-3">
+          <img id="video-thumbnail" src="" alt=""
+            class="w-[72px] h-[42px] object-cover rounded-md bg-[#2a2a2a]
+                   border border-[#303030] shrink-0"
+            style="display:none;">
           <div class="min-w-0 flex-1">
-            <p id="video-title" class="text-[12.5px] font-medium text-white whitespace-nowrap overflow-hidden text-ellipsis m-0">Detecting video…</p>
-            <span class="inline-flex items-center gap-[4px] text-[10px] text-[#9a9a9a] mt-[3px]">
-              <i class="fa-brands fa-youtube text-[#ff0033] text-[9px]"></i>Active tab
+            <p id="video-title"
+              class="text-[12.5px] font-medium text-white whitespace-nowrap
+                     overflow-hidden text-ellipsis m-0">
+              Detecting video…
+            </p>
+            <span class="inline-flex items-center gap-1.5 text-[10px] text-[#666] mt-1">
+              <i class="fa-brands fa-youtube text-[#ff0033] text-[10px]"></i>Active tab
             </span>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Model pill -->
-    <div class="flex justify-center my-[12px] shrink-0" id="model-pill-container">
-      <div class="relative flex items-center group">
-        <div id="model-pill" class="flex items-center gap-[7px] px-[12px] py-[5px] border border-[#cfcfcf]/30 rounded-full bg-black">
-          <div class="w-[6px] h-[6px] rounded-full bg-[#20beff] shadow-[0_0_0_3px_rgba(32,190,255,.15)] animate-pulse"></div>
-          <span id="active-model-text" class="text-[11px] font-medium text-[#9a9a9a] tracking-[.01em]">Free model</span>
-        </div>
-        <button id="toggle-model-btn" class="absolute -right-[26px] border-none bg-transparent text-[#9a9a9a] opacity-0 group-hover:opacity-100 cursor-pointer p-[4px] transition-opacity" title="Toggle model name">
-          <i id="toggle-model-icon" class="fa-regular fa-eye-slash"></i>
+    <!-- ── Settings overlay ── -->
+    <div id="setup-container"
+      class="hidden absolute inset-0 z-30 bg-[#121212]/95 backdrop-blur-md
+             pt-5 px-5 flex-col">
+
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-[15px] font-semibold text-white">Model settings</h2>
+        <button id="close-settings-btn"
+          class="w-8 h-8 border-none bg-transparent rounded-md text-[#888]
+                 flex items-center justify-center cursor-pointer
+                 transition-all hover:bg-[#2a2a2a] hover:text-white">
+          <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
-    </div>
 
-    <!-- Settings overlay -->
-    <div id="setup-container" class="hidden absolute inset-0 z-30 bg-black/90 backdrop-blur-[6px] pt-[18px] px-[18px] flex-col">
-      <div class="flex items-center justify-between mb-[22px]">
-        <h2 class="text-[15px] font-semibold m-0 text-white">Model settings</h2>
-        <button id="close-settings-btn" class="w-[30px] h-[30px] border-none bg-transparent rounded-[7px] text-[#9a9a9a] flex items-center justify-center cursor-pointer transition-all hover:bg-[#f0f0f0]/10 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-
-      <div class="mb-[16px]">
-        <label class="block text-[10.5px] font-semibold tracking-[.06em] uppercase text-[#9a9a9a] mb-[7px]">AI provider</label>
+      <!-- Provider -->
+      <div class="mb-5">
+        <label class="block text-[10px] font-semibold tracking-[.1em] uppercase text-[#666] mb-2 font-code">
+          AI provider
+        </label>
         <div class="relative">
-          <select id="model-select" class="w-full bg-[#f7f7f7]/10 border border-[#cfcfcf]/30 rounded-[7px] text-white font-inherit text-[13px] py-[10px] pl-[12px] pr-[34px] outline-none appearance-none transition-all focus:border-white focus:shadow-[0_0_0_3px_rgba(32,190,255,.12)]">
-            <option value="free" class="bg-black">Free model (Qwen)</option>
-            <option value="gemini" class="bg-black">Gemini</option>
-            <option value="grok" class="bg-black">Grok</option>
+          <select id="model-select"
+            class="w-full bg-[#1e1e1e] border border-[#303030] rounded-lg text-white
+                   text-[13px] py-2.5 pl-3 pr-9 outline-none appearance-none
+                   transition-all focus:border-[#20BEFF] focus:shadow-[0_0_0_2px_rgba(32,190,255,0.15)]">
+            <option value="free" class="bg-[#1e1e1e]">Free model (Qwen)</option>
+            <option value="gemini" class="bg-[#1e1e1e]">Gemini</option>
+            <option value="grok" class="bg-[#1e1e1e]">Grok</option>
           </select>
-          <i class="fa-solid fa-chevron-down absolute right-[12px] top-1/2 -translate-y-1/2 text-[10px] text-[#9a9a9a] pointer-events-none"></i>
+          <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2
+                    text-[10px] text-[#666] pointer-events-none"></i>
         </div>
       </div>
 
-      <div id="api-key-container" class="mb-[16px] hidden">
-        <label class="block text-[10.5px] font-semibold tracking-[.06em] uppercase text-[#9a9a9a] mb-[7px]">API key</label>
+      <!-- API key -->
+      <div id="api-key-container" class="mb-5 hidden">
+        <label class="block text-[10px] font-semibold tracking-[.1em] uppercase text-[#666] mb-2 font-code">
+          API key
+        </label>
         <div class="relative">
-          <i class="fa-solid fa-key absolute left-[12px] top-1/2 -translate-y-1/2 text-[11px] text-[#9a9a9a]"></i>
-          <input type="password" id="api-key-input" placeholder="Paste your API key here…" class="w-full bg-[#f7f7f7]/10 border border-[#cfcfcf]/30 rounded-[7px] text-white font-inherit text-[13px] py-[10px] pl-[32px] pr-[12px] outline-none appearance-none transition-all focus:border-white focus:shadow-[0_0_0_3px_rgba(32,190,255,.12)]">
+          <i class="fa-solid fa-key absolute left-3 top-1/2 -translate-y-1/2 text-[11px] text-[#666]"></i>
+          <input type="password" id="api-key-input" placeholder="Paste your API key here…"
+            class="w-full bg-[#1e1e1e] border border-[#303030] rounded-lg text-white
+                   text-[13px] py-2.5 pl-9 pr-3 outline-none
+                   transition-all focus:border-[#20BEFF] focus:shadow-[0_0_0_2px_rgba(32,190,255,0.15)]
+                   placeholder:text-[#555]">
         </div>
       </div>
 
-      <button id="save-setup-btn" class="w-full bg-white text-black border-none font-inherit text-[13px] font-semibold p-[11px] rounded-[7px] cursor-pointer mt-[6px] transition-all hover:opacity-[.85] active:scale-95">Save &amp; apply</button>
+      <button id="save-setup-btn"
+        class="w-full bg-[#20BEFF] text-white border-none
+               text-[13px] font-semibold py-2.5 rounded-lg cursor-pointer mt-1
+               transition-all hover:bg-[#1aabee] active:scale-[0.98]">
+        Save &amp; apply
+      </button>
     </div>
 
-    <!-- Chat -->
-    <div id="chat-history" class="flex-1 overflow-y-auto overflow-x-hidden flex flex-col gap-[14px] p-[2px] pb-[100px] custom-scrollbar">
-      <div class="flex-1 flex flex-col items-center justify-center text-center text-[#9a9a9a] px-[30px] gap-[10px]">
-        <i class="fa-solid fa-comment-dots text-[20px] text-[#cfcfcf]/30"></i>
-        <p class="text-[12.5px] leading-[1.5] m-0">Ask anything about this video.<br>Answers are grounded in its transcript.</p>
-        <span class="text-[11px] text-[#9a9a9a] font-mono">e.g. "summarize the last 5 minutes"</span>
+    <!-- ── Chat history ── -->
+    <div id="chat-history"
+      class="flex-1 overflow-y-auto overflow-x-hidden flex flex-col gap-3
+             px-0.5 pt-1 pb-[100px] custom-scrollbar">
+      <div class="empty-state">
+        <div class="empty-icon">
+          <i class="fa-regular fa-comment-dots"></i>
+        </div>
+        <p>Ask anything about this video.<br>Answers are grounded in its transcript.</p>
+        <span class="font-code">e.g. "summarize the last 5 minutes"</span>
       </div>
     </div>
   </div>
 
-  <!-- Input -->
-  <div id="input-wrapper" class="absolute bottom-0 left-0 w-full px-[14px] pt-[10px] pb-[14px] bg-gradient-to-t from-black via-black/90 to-transparent z-10">
-    <div id="input-container" class="flex items-center border border-[#cfcfcf]/30 rounded-full bg-black py-[5px] pr-[5px] pl-[16px] transition-all focus-within:border-white focus-within:shadow-[0_0_0_3px_rgba(32,190,255,.12)]">
-      <input type="text" id="question-input" placeholder="Ask about this video…" disabled class="flex-1 border-none outline-none bg-transparent font-inherit text-[13px] text-white py-[8px] pr-[8px] placeholder:text-[#9a9a9a] disabled:cursor-not-allowed">
-      <button id="ask-btn" disabled class="shrink-0 w-[32px] h-[32px] border-none rounded-full bg-white text-black flex items-center justify-center cursor-pointer transition-all hover:scale-105 disabled:bg-[#cfcfcf]/30 disabled:text-[#9a9a9a] disabled:cursor-not-allowed disabled:hover:scale-100"><i class="fa-solid fa-arrow-up"></i></button>
+  <!-- ═══ INPUT ═══ -->
+  <div id="input-wrapper"
+    class="absolute bottom-0 left-0 w-full px-3.5 pt-3 pb-3 z-10"
+    style="background:linear-gradient(to top, #121212 60%, rgba(18,18,18,0))">
+    <div id="input-container"
+      class="flex items-center border border-[#303030] rounded-xl bg-[#1e1e1e]
+             py-1.5 pr-1.5 pl-4
+             transition-all focus-within:border-[#20BEFF] focus-within:shadow-[0_0_0_2px_rgba(32,190,255,0.15)]">
+      <input type="text" id="question-input" placeholder="Ask about this video…" disabled
+        class="flex-1 border-none outline-none bg-transparent text-[13px] text-white
+               py-2 pr-2 placeholder:text-[#555] disabled:cursor-not-allowed">
+      <button id="ask-btn" disabled
+        class="shrink-0 w-8 h-8 border-none rounded-lg bg-[#f5f5f5] text-white
+               flex items-center justify-center cursor-pointer transition-all
+               hover:bg-[#cbeeff]
+               disabled:bg-[#2a2a2a] disabled:text-[#555]
+               disabled:cursor-not-allowed disabled:hover:bg-[#2a2a2a]">
+        <i class="fa-solid fa-arrow-up text-[13px]"></i>
+      </button>
     </div>
   </div>
 
   <script src="popup.js"></script>
 </body>
+
 </html>
